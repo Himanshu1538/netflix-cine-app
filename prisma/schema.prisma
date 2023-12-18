@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Generator block: Specifies the Prisma Client generator.
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Datasource block: Specifies the database connection details.
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User model: Represents user-related information.
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // User ID field
+  name String
+  image String?
+  email String? @unique
+  emailVerified DateTime?
+  hashedPassword String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[] // Sessions associated with the user
+  accounts Account[] // Accounts associated with the user
+  favoriteIds String[] @db.ObjectId // IDs of favorite movies associated with the user
+}
+
+// Account model: Represents external accounts associated with a user.
+model Account {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // Account ID field
+  userId             String   @db.ObjectId // User ID to which the account belongs
+  type               String
+  provider           String // Account provider (e.g., Google, GitHub)
+  providerAccountId  String // Account ID assigned by the provider
+  refresh_token      String?  @db.String
+  access_token       String?  @db.String
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.String
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // User associated with the account
+
+  @@unique([provider, providerAccountId]) // Unique constraint for provider and providerAccountId
+}
+
+// Session model: Represents user sessions for authentication.
+model Session {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // Session ID field
+  sessionToken String @unique
+  userId String @db.ObjectId // User ID associated with the session
+  expires DateTime
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // User associated with the session
+}
+
+// VerificationToken model: Represents tokens for email verification.
+model VerificationToken {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // Token ID field
+  identifier String // Identifier for the verification token
+  token      String   @unique // Unique verification token
+  expires    DateTime
+
+  @@unique([identifier, token]) // Unique constraint for identifier and token
+}
+
+// Movie model: Represents movie-related information.
+model Movie {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // Movie ID field
+  title String
+  description String
+  videoUrl String
+  thumbnailUrl String
+  genre String
+  duration String
+}
