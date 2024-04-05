@@ -22,7 +22,7 @@ export default async function handler(
     // Generate a random index
     const randomIndex = Math.floor(Math.random() * moviesCount);
 
-    // Fetch a single random movie from the database based on the random index
+    // Fetch a single random movie from the database based on the random-index
     const randomMovies = await prismadb.movie.findMany({
       take: 1,
       skip: randomIndex,
