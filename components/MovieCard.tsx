@@ -16,7 +16,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
   const { openModal } = useInfoModalStore();
   const date = new Date().getFullYear();
 
-  // Function to redirect to the watch page
+  // Function to re-direct to the watch page
   const redirectToWatch = useCallback(
     () => router.push(`/watch/${data.id}`),
     [router, data.id]
