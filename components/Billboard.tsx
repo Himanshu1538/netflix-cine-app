@@ -10,7 +10,7 @@ const Billboard: React.FC = () => {
   const { openModal } = useInfoModalStore();
   const { data } = useBillboard();
 
-  // Function to open the information modal
+  // Function to open information modal
   const handleOpenModal = useCallback(() => {
     openModal(data?.id);
   }, [openModal, data?.id]);
